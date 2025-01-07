@@ -3,6 +3,9 @@
 
 #define LED_BUILTIN 2
 
+const bool ENABLE_SOFT_CAP = false;
+const float MAX_TOTAL_AMP = 2250.0;
+
 #include <Haptic_Driver.h>
 #define DEFAULT_DRIVER_ADDR DEF_ADDR
 #define NUM_DRIVERS 16
@@ -121,7 +124,7 @@ void setup() {
     test_driver_amplitudes[hap_idx] = 0xFF;
     fast_set_all_drivers(test_driver_amplitudes);
     digitalWrite(LED_BUILTIN, LOW);
-    delay(500);
+    delay(100);
     digitalWrite(LED_BUILTIN, HIGH); // <5ms flash
     test_driver_amplitudes[hap_idx] = 0;
   }
@@ -129,7 +132,7 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
 
   Serial.println("INFO: ESP32 based Haptic Glove Driver Board v1. Visit https://github.com/kevin-cgc/HapticGlove for more information.");
-  Serial.println("INFO: Ready LED");
+  Serial.println("INFO: Ready");
 }
 
 const uint8_t COBS_DELIM = 0x88; // using unlikely byte as delim
@@ -166,6 +169,21 @@ void loop() {
       packet_buf[i] = COBS_DELIM;
       if (next_sym == 0) { Serial.println("ERROR: invalid COBS"); return; } // avoid infinite loop if next_sym is zero, should not occur in valid messages though
       i += next_sym;
+    }
+
+    if (ENABLE_SOFT_CAP) {
+      auto driver_amp_sum = 0;
+      for (int hap_idx=0; hap_idx<NUM_DRIVERS; hap_idx++) {
+        driver_amp_sum += driver_amplitudes[hap_idx];
+      }
+      if (driver_amp_sum > MAX_TOTAL_AMP) { // could cause usb port to reset if power draw too high. If used with a USBC-C cable and PD port, 3A@5V should be possible, which should not require any soft limiting
+        // scale all amplitudes down
+        // led to notify here would be nice
+        float scale_factor = MAX_TOTAL_AMP / driver_amp_sum;
+        for (int hap_idx=0; hap_idx<NUM_DRIVERS; hap_idx++) {
+          driver_amplitudes[hap_idx] = (uint8_t)(driver_amplitudes[hap_idx] * scale_factor);
+        }
+      }
     }
 
     bool success = fast_set_all_drivers(driver_amplitudes);
