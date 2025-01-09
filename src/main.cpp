@@ -82,7 +82,7 @@ bool zero_all_drivers() {
 
 void setup() {
   Serial.begin(921600);
-  Serial.println("INFO: Starting...");
+  Serial.println("INIT: Starting...");
   Wire.begin();
   // Both ESP32 and TCA9548A have been characterized for 400kHz
   // Both also have employee suggestions via forums that 1MHz should work but is not guaranteed
@@ -120,7 +120,7 @@ void setup() {
   // iterate all drivers to 100% for 1s each
   uint8_t test_driver_amplitudes[NUM_DRIVERS] = {0};
   for (int hap_idx=0; hap_idx<NUM_DRIVERS; hap_idx++) {
-    Serial.println("INFO: Testing driver " + (String)hap_idx + "...");
+    Serial.println("INIT: Testing driver " + (String)hap_idx + "...");
     test_driver_amplitudes[hap_idx] = 0xFF;
     fast_set_all_drivers(test_driver_amplitudes);
     digitalWrite(LED_BUILTIN, LOW);
@@ -131,8 +131,8 @@ void setup() {
   fast_set_all_drivers(test_driver_amplitudes);
   digitalWrite(LED_BUILTIN, LOW);
 
-  Serial.println("INFO: ESP32 based Haptic Glove Driver Board v1. Visit https://github.com/kevin-cgc/HapticGlove for more information.");
-  Serial.println("INFO: Ready");
+  Serial.println("INIT: ESP32 based Haptic Glove Driver Board v1. Visit https://github.com/kevin-cgc/HapticGlove for more information.");
+  Serial.println("INIT: Ready");
 }
 
 const uint8_t COBS_DELIM = 0x88; // using unlikely byte as delim
