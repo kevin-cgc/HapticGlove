@@ -1,3 +1,11 @@
+# HapticGlove
+
+USB-C control board for up to 16 linear resonant actuators (LRAs). Can be driven with [AdapTics](https://github.com/AdaptiveHaptics/AdapticsEngine) or custom software using the [serial protocol](https://github.com/kevin-cgc/HapticGlove/blob/main/src/main.cpp#L138-L195) ([example implementation](https://github.com/AdaptiveHaptics/AdapticsEngine/blob/main/adaptics-engine/src/threads/streaming/hapticglove/glovedriver.rs)).
+
+The hardware design is based on the glove described in [HapticPilot](https://doi.org/10.1145/3631453) (Sung et al., 2023).
+
+![3D render of the HapticGlove PCB](images/hapticglove-pcb.png)
+
 # Non-PCB Bill of Materials (BOM)
 
 - **1x Stretchy (spandex) gloves**
@@ -51,14 +59,18 @@ USB to UART drivers are available from Silicon Labs at https://www.silabs.com/de
 
 - **Wiring Details**
   - **Fingers**:
-    Route the wires around the back or opposite side of the pigtails to increase flexibility and reduce interference with hand movements. Secure the wires with thin heat-shrink tubing to prevent extra splitting at the Y-junction (refer to pictures for details).
+    Route the wires around the back or opposite side of the pigtails to increase flexibility and reduce interference with hand movements. Secure the wires with thin heat-shrink tubing to prevent extra splitting at the Y-junction.
   - **Palm**:
     I recommend standard "straight-in" wire orientation for LRAs on the palm. This requires applying a larger-diameter heat-shrink tubing over the solder pads to protect and reinforce the connections.
 
 - **Polarity Considerations**
-  I aimed to maintain consistent polarity for all LRAs. This meant "flipping" the pair of routed for the fingers to the back side (e.g., from the marked-red side to the white side), which actually also helped make the layout more comfortable. While the v1 PCB does not explicitly synchronize phase, this also simplifies future upgrades or modifications.
+  I aimed to maintain consistent polarity for all LRAs. This meant "flipping" the wire pairs routed to the fingers to the back side (e.g., from the marked-red side to the white side), which actually also helped make the layout more comfortable. While the v1 PCB does not explicitly synchronize phase, this also simplifies future upgrades or modifications.
 
 ### Adhering the LRAs
-Attach the LRAs to the glove using their pre-applied adhesive, additional adhesive was unnecessary for me but flexible fabric adhesive would be recommended. I let the adhesive cure for 12 hours before testing the glove.
+Attach the LRAs to the glove using their pre-applied adhesive. Additional flexible fabric adhesive is recommended.
 
-The LRA positions can be configured in software, so layours can be flexible and precise placement is not necessary.
+The LRA positions can be configured in software, so layouts can be flexible and precise placement is not necessary.
+
+# License
+
+[MIT](LICENSE). Third-party libraries retain their original license notices.
